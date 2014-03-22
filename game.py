@@ -74,6 +74,12 @@ class Spielfeld:
 					return True
 			return False		
 
+	def gameover(self):
+		for direction in ["up", "down", "left", "right"]:
+			if lines_movable(direction):
+				return False
+		return True
+
 	def rowmove(self, arr):
 		for i in xrange(arr.size-1):
 			if arr[i] == 0 and arr[i+1] != 0:

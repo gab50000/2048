@@ -40,5 +40,5 @@ class MainWindow:
 
 
 	def draw_number(self, number, index):
-		pos = (self.dims[0]/2 + (index/4 - 2) * self.width, self.dims[1]/2-10 +(index %4) *2*self.width)
+		pos = (self.dims[0]/2 + 2 + (index/4 - 2) * self.width, self.dims[1]/2-6 +(index %4) *2*self.width)
 		self.myscreen.addstr(pos[0], pos[1], str(number))

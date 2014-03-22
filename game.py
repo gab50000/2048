@@ -19,9 +19,9 @@ class Spielfeld:
 	def __repr__(self):
 		r = "--------------\n"
 
-		for i in range(4):
+		for i in xrange(4):
 			r += "| "
-			for j in range(4):
+			for j in xrange(4):
 				if self.field[i,j] == 0:
 					pass
 				else:
@@ -38,7 +38,7 @@ class Spielfeld:
 			if field == 0:
 				freefields.append(i)
 
-		ind = np.random.randint(len(freefields))
+		ind = freefields[np.random.randint(len(freefields))]
 
 		if np.random.randint(2) == 0:
 			self.field[ind/self.dims[1], ind % self.dims[1]] = 2
@@ -46,42 +46,56 @@ class Spielfeld:
 			self.field[ind/self.dims[1], ind % self.dims[1]] = 4
 
 
-	def collapse(self, arr):
-	#after rowmove make sure that the row begins with a number, move the next number closer and let it collapse if possible
-		i = 0
-		while i < len(arr)-1:
-			j = i+1
-			while arr[j] == 0 and j < len(arr)-1:
-				j += 1
-			if arr[i] == arr[j]:
-				arr[i] += arr[j]
-				arr[j] = 0
-	#after collapse start anew with remaining array part
-			else:
-				if i+1 != j:
-					arr[i+1] = arr[j]
-					arr[j] = 0
-			self.rowmove(arr[j:])
+	def line_movable(self, arr):
+		for i, elem in enumerate(arr):
+			if elem != 0 and i != 0 and (arr[i-1] == 0 or arr[i-1] == elem):
+					return True
+		return False
 
+	def lines_movable(self, direction):
+		if direction == "up":
+			for i in xrange(self.field.shape[1]):
+				if line_movable(self.field[:,i]):
+					return True
+			return False
+		elif direction == "down":
+			for i in xrange(self.field.shape[1]):
+				if line_movable(self.field[::-1,i]):
+					return True
+			return False
+		elif direction == "left":
+			for i in xrange(self.field.shape[0]):
+				if line_movable(self.field[i,:]):
+					return True
+			return False
+		else:
+			for i in xrange(self.field.shape[0]):
+				if line_movable(self.field[i,::-1]):
+					return True
+			return False		
 
 	def rowmove(self, arr):
-	#remove all free fields at the beginning
-		i = 0
-		while arr[i] == 0:
-			i += 1
-		arr[:len(arr)-i] = arr[i:]
-		arr[len(arr)-i:] = 0
-
-	#collapse equal fields
-		self.collapse(arr)
-
-
-
-
+		for i in xrange(arr.size-1):
+			if arr[i] == 0 and arr[i+1] != 0:
+				arr[i] = arr[i+1]
+				arr[i+1] = 0
+			elif arr[i] == arr[i+1]:
+				arr[i] += arr[i+1]
+				arr[i+1] = 0
 
 	def move(self, direction):
 		if direction == "up":
-			pass
+			for i in xrange(self.field.shape[1]):
+				self.rowmove(self.field[:,i])
+		elif direction == "down":
+			for i in xrange(self.field.shape[1]):
+				self.rowmove(self.field[::-1,i])
+		elif direction == "left":
+			for i in xrange(self.field.shape[0]):
+				self.rowmove(self.field[i,:])
+		else:
+			for i in xrange(self.field.shape[0]):
+				self.rowmove(self.field[i,::-1])
 
 
 def main(*args):

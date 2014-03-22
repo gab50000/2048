@@ -55,22 +55,22 @@ class Spielfeld:
 	def lines_movable(self, direction):
 		if direction == "up":
 			for i in xrange(self.field.shape[1]):
-				if line_movable(self.field[:,i]):
+				if self.line_movable(self.field[:,i]):
 					return True
 			return False
 		elif direction == "down":
 			for i in xrange(self.field.shape[1]):
-				if line_movable(self.field[::-1,i]):
+				if self.line_movable(self.field[::-1,i]):
 					return True
 			return False
 		elif direction == "left":
 			for i in xrange(self.field.shape[0]):
-				if line_movable(self.field[i,:]):
+				if self.line_movable(self.field[i,:]):
 					return True
 			return False
 		else:
 			for i in xrange(self.field.shape[0]):
-				if line_movable(self.field[i,::-1]):
+				if self.line_movable(self.field[i,::-1]):
 					return True
 			return False		
 
@@ -83,7 +83,7 @@ class Spielfeld:
 				arr[i] += arr[i+1]
 				arr[i+1] = 0
 
-	def move(self, direction):
+	def single_step(self, direction):
 		if direction == "up":
 			for i in xrange(self.field.shape[1]):
 				self.rowmove(self.field[:,i])
@@ -96,6 +96,12 @@ class Spielfeld:
 		else:
 			for i in xrange(self.field.shape[0]):
 				self.rowmove(self.field[i,::-1])
+
+	def full_move(self, direction):
+		if self.lines_movable(direction):
+			while self.lines_movable(direction):
+				self.single_step(direction)
+			self.add_numbers()
 
 
 def main(*args):

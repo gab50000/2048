@@ -6,9 +6,11 @@ class MainWindow:
 	def __init__(self, spielfeld):
 		self.spielfeld = spielfeld
 		self.width = 4
+		self.inp = "nix gedrueckt"
 	def __enter__(self):
 		self.myscreen = curses.initscr()
 		curses.curs_set(0)
+		curses.start_color()
 
 	def __exit__(self, type, value, traceback):
 		curses.endwin()			
@@ -22,8 +24,8 @@ class MainWindow:
 			# self.myscreen.addstr(dims[0]/2, dims[1]/2, "Hello World!", curses.A_BLINK)
 			self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
 			self.draw_field()
-			inp = self.myscreen.getch()
-			self.myscreen.addstr(1, 3, str(inp), curses.A_NORMAL)
+			self.myscreen.addstr(2, 1, str(self.inp), curses.A_NORMAL)			
+			self.inp = self.myscreen.getch()
 			self.myscreen.refresh()
 
 	def draw_field(self):

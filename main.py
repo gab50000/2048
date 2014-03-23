@@ -7,6 +7,7 @@ class MainWindow:
 		self.spielfeld = spielfeld
 		self.width = 4
 		self.inp = "nix gedrueckt"
+		self.gameover = False
 	def __enter__(self):
 		self.myscreen = curses.initscr()
 		curses.curs_set(0)
@@ -22,7 +23,10 @@ class MainWindow:
 			self.dims = self.myscreen.getmaxyx()
 			dims = self.myscreen.getmaxyx()
 			self.draw_surroundings()
-			self.inp = self.myscreen.getch()
+			if self.gameover:
+				self.draw_gameover()
+			else:
+				self.inp = self.myscreen.getch()
 			self.myscreen.refresh()
 
 	def check_input(self):
@@ -51,7 +55,7 @@ class MainWindow:
 				self.spielfeld.add_numbers()
 				self.spielfeld.score += factor * tempscore
 			if self.spielfeld.gameover(merged):
-				self.draw_gameover()
+				self.gameover = True
 
 	def draw_gameover(self):
 		self.myscreen.border(0)

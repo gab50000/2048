@@ -53,7 +53,6 @@ class MainWindow:
 					tempscore, factor = self.spielfeld.single_step(s, merged, tempscore, factor)
 					self.myscreen.clear()
 					self.draw_surroundings()
-					self.myscreen.addstr(5, 1, " ".join([" ".join(map(str, m)) for m in merged]), curses.A_BOLD)
 					self.myscreen.refresh()
 					curses.napms(50)
 				self.spielfeld.add_numbers()
@@ -91,4 +90,4 @@ class MainWindow:
 
 	def draw_number(self, number, index):
 		pos = (self.dims[0]/2 + 2 + (index/4 - 2) * self.width, self.dims[1]/2-6 +(index %4) *2*self.width)
-		self.myscreen.addstr(pos[0], pos[1], str(number))
+		self.myscreen.addstr(pos[0], pos[1], str(number), curses.A_BOLD)

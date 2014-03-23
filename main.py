@@ -17,16 +17,40 @@ class MainWindow:
 
 	def application(self):
 		while 1:
-			self.dims = self.myscreen.getmaxyx()
 			self.myscreen.clear()
+			self.check_input()
+			self.dims = self.myscreen.getmaxyx()
 			dims = self.myscreen.getmaxyx()
-			self.myscreen.border(0)
-			# self.myscreen.addstr(dims[0]/2, dims[1]/2, "Hello World!", curses.A_BLINK)
-			self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
-			self.draw_field()
-			self.myscreen.addstr(2, 1, str(self.inp), curses.A_NORMAL)			
+			self.draw_surroundings()
 			self.inp = self.myscreen.getch()
 			self.myscreen.refresh()
+
+	def check_input(self):
+		if self.inp == 65:
+			s = "up"
+		elif self.inp == 66:
+			s = "down"
+		elif self.inp == 68:
+			s = "left"
+		elif self.inp == 67:
+			s = "right"
+		else:
+			s = "?"
+
+		if s != "?":
+			if self.spielfeld.lines_movable(s):
+				while self.spielfeld.lines_movable(s):
+					self.spielfeld.single_step(s)
+					self.myscreen.clear()
+					self.draw_surroundings()
+					self.myscreen.refresh()
+					curses.napms(100)
+				self.spielfeld.add_numbers()
+
+	def draw_surroundings(self):
+		self.myscreen.border(0)
+		self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
+		self.draw_field()			
 
 	def draw_field(self):
 		for i in xrange(5):

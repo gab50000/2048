@@ -81,6 +81,9 @@ class Spielfeld:
 				return False
 		return True
 
+	def win(self):
+		return 2048 in self.field
+
 	def rowmove(self, arr, merged, score, factor):
 		for i in xrange(arr.size-1):
 			if arr[i] == 0 and arr[i+1] != 0:

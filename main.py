@@ -8,6 +8,8 @@ class MainWindow:
 		self.width = 4
 		self.inp = "nix gedrueckt"
 		self.gameover = False
+		self.win = False
+
 	def __enter__(self):
 		self.myscreen = curses.initscr()
 		curses.curs_set(0)
@@ -24,7 +26,9 @@ class MainWindow:
 			dims = self.myscreen.getmaxyx()
 			self.draw_surroundings()
 			if self.gameover:
-				self.draw_gameover()
+				self.draw("GAME OVER")
+			elif self.win:
+				self.draw("YOU WIN!")
 			else:
 				self.inp = self.myscreen.getch()
 			self.myscreen.refresh()
@@ -56,14 +60,16 @@ class MainWindow:
 				self.spielfeld.score += factor * tempscore
 			if self.spielfeld.gameover(merged):
 				self.gameover = True
+			elif self.spielfeld.win():
+				self.win = True
 
-	def draw_gameover(self):
+	def draw(self, text):
 		self.myscreen.border(0)
 		self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
-		self.myscreen.addstr(4, self.dims[1]/2, "GAME OVER", curses.A_BOLD)
+		self.myscreen.addstr(4, self.dims[1]/2, text, curses.A_BOLD)
 		self.draw_field()			
 		curses.napms(50)
-				
+
 
 	def draw_surroundings(self):
 		self.myscreen.border(0)

@@ -44,6 +44,7 @@ class MainWindow:
 					self.spielfeld.single_step(s, merged)
 					self.myscreen.clear()
 					self.draw_surroundings()
+					self.myscreen.addstr(5, 1, " ".join([" ".join(map(str, m)) for m in merged]), curses.A_BOLD)
 					self.myscreen.refresh()
 					curses.napms(100)
 				self.spielfeld.add_numbers()
@@ -63,7 +64,7 @@ class MainWindow:
 			if number != 0:
 				self.draw_number(number, i)
 
-		self.myscreen.addstr(self.dims[0]/2 -2*self.width-1, self.dims[1]/2-10, "Highscore:")
+		self.myscreen.addstr(self.dims[0]/2 -2*self.width-1, self.dims[1]/2-10, "Score: "+str(self.spielfeld.score))
 
 
 	def draw_number(self, number, index):

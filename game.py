@@ -2,6 +2,7 @@ import numpy as np
 
 class Spielfeld:
 	def __init__(self, arr=None):
+		self.score = 0
 		if arr == None or arr != numpy.ndarray:
 			self.field = np.zeros((4,4), int)
 		else:
@@ -48,7 +49,7 @@ class Spielfeld:
 
 	def line_movable(self, arr, merged):
 		for i, elem in enumerate(arr):
-			if elem != 0 and i != 0 and (arr[i-1] == 0 or (arr[i-1] == elem and i-1 not in merged)):
+			if elem != 0 and i != 0 and (arr[i-1] == 0 or (arr[i-1] == elem and i-1 not in merged and i not in merged)):
 					return True
 		return False
 
@@ -85,7 +86,7 @@ class Spielfeld:
 			if arr[i] == 0 and arr[i+1] != 0:
 				arr[i] = arr[i+1]
 				arr[i+1] = 0
-			elif arr[i] == arr[i+1] and i not in merged:
+			elif arr[i] != 0 and arr[i] == arr[i+1] and i not in merged and i+1 not in merged:
 				arr[i] += arr[i+1]
 				arr[i+1] = 0
 				merged.append(i)

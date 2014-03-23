@@ -75,42 +75,49 @@ class Spielfeld:
 					return True
 			return False		
 
-	def gameover(self):
+	def gameover(self, merged):
 		for direction in ["up", "down", "left", "right"]:
-			if lines_movable(direction):
+			if self.lines_movable(direction, merged):
 				return False
 		return True
 
-	def rowmove(self, arr, merged):
+	def rowmove(self, arr, merged, score, factor):
 		for i in xrange(arr.size-1):
 			if arr[i] == 0 and arr[i+1] != 0:
 				arr[i] = arr[i+1]
 				arr[i+1] = 0
 			elif arr[i] != 0 and arr[i] == arr[i+1] and i not in merged and i+1 not in merged:
+				factor += 1
+				score += arr[i]
 				arr[i] += arr[i+1]
 				arr[i+1] = 0
 				merged.append(i)
+		return score, factor
 
-	def single_step(self, direction, merged):
+	def single_step(self, direction, merged, score, factor):
 		if direction == "up":
 			for i in xrange(self.field.shape[1]):
-				self.rowmove(self.field[:,i], merged[i])
+				score, factor = self.rowmove(self.field[:,i], merged[i], score, factor)
 		elif direction == "down":
 			for i in xrange(self.field.shape[1]):
-				self.rowmove(self.field[::-1,i], merged[i])
+				score, factor = self.rowmove(self.field[::-1,i], merged[i], score, factor)
 		elif direction == "left":
 			for i in xrange(self.field.shape[0]):
-				self.rowmove(self.field[i,:], merged[i])
+				score, factor = self.rowmove(self.field[i,:], merged[i], score, factor)
 		else:
 			for i in xrange(self.field.shape[0]):
-				self.rowmove(self.field[i,::-1], merged[i])
+				score, factor = self.rowmove(self.field[i,::-1], merged[i], score, factor)
+		return score, factor
 
 	def full_move(self, direction):
 		merged = [[] for i in xrange(4)]
+		tempscore = 0
+		factor = 0
 		if self.lines_movable(direction, merged):
 			while self.lines_movable(direction, merged):
-				self.single_step(direction, merged)
+				tempscore, factor = self.single_step(direction, merged)
 			self.add_numbers()
+		self.score += factor * tempscore
 
 
 def main(*args):

@@ -39,15 +39,25 @@ class MainWindow:
 
 		if s != "?":
 			merged = [[] for i in xrange(4)]
+			tempscore, factor = 0, 0
 			if self.spielfeld.lines_movable(s, merged):
 				while self.spielfeld.lines_movable(s, merged):
-					self.spielfeld.single_step(s, merged)
+					tempscore, factor = self.spielfeld.single_step(s, merged, tempscore, factor)
 					self.myscreen.clear()
 					self.draw_surroundings()
 					self.myscreen.addstr(5, 1, " ".join([" ".join(map(str, m)) for m in merged]), curses.A_BOLD)
 					self.myscreen.refresh()
-					curses.napms(100)
+					curses.napms(50)
 				self.spielfeld.add_numbers()
+				self.spielfeld.score += factor * tempscore
+			if self.spielfeld.gameover(merged):
+				self.draw_gameover()
+
+	def draw_gameover(self):
+		self.myscreen.border(0)
+		self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
+		self.myscreen.addstr(4, self.dims[1]/2, "GAME OVER", curses.A_BOLD)
+		self.draw_field()					
 
 	def draw_surroundings(self):
 		self.myscreen.border(0)

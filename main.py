@@ -61,7 +61,9 @@ class MainWindow:
 		self.myscreen.border(0)
 		self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
 		self.myscreen.addstr(4, self.dims[1]/2, "GAME OVER", curses.A_BOLD)
-		self.draw_field()					
+		self.draw_field()			
+		curses.napms(50)
+				
 
 	def draw_surroundings(self):
 		self.myscreen.border(0)

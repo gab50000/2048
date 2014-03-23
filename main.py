@@ -38,9 +38,10 @@ class MainWindow:
 			s = "?"
 
 		if s != "?":
-			if self.spielfeld.lines_movable(s):
-				while self.spielfeld.lines_movable(s):
-					self.spielfeld.single_step(s)
+			merged = [[] for i in xrange(4)]
+			if self.spielfeld.lines_movable(s, merged):
+				while self.spielfeld.lines_movable(s, merged):
+					self.spielfeld.single_step(s, merged)
 					self.myscreen.clear()
 					self.draw_surroundings()
 					self.myscreen.refresh()

@@ -46,31 +46,31 @@ class Spielfeld:
 			self.field[ind/self.dims[1], ind % self.dims[1]] = 4
 
 
-	def line_movable(self, arr):
+	def line_movable(self, arr, merged):
 		for i, elem in enumerate(arr):
-			if elem != 0 and i != 0 and (arr[i-1] == 0 or arr[i-1] == elem):
+			if elem != 0 and i != 0 and (arr[i-1] == 0 or (arr[i-1] == elem and i-1 not in merged)):
 					return True
 		return False
 
-	def lines_movable(self, direction):
+	def lines_movable(self, direction, merged):
 		if direction == "up":
 			for i in xrange(self.field.shape[1]):
-				if self.line_movable(self.field[:,i]):
+				if self.line_movable(self.field[:,i], merged[i]):
 					return True
 			return False
 		elif direction == "down":
 			for i in xrange(self.field.shape[1]):
-				if self.line_movable(self.field[::-1,i]):
+				if self.line_movable(self.field[::-1,i], merged[i]):
 					return True
 			return False
 		elif direction == "left":
 			for i in xrange(self.field.shape[0]):
-				if self.line_movable(self.field[i,:]):
+				if self.line_movable(self.field[i,:], merged[i]):
 					return True
 			return False
 		else:
 			for i in xrange(self.field.shape[0]):
-				if self.line_movable(self.field[i,::-1]):
+				if self.line_movable(self.field[i,::-1], merged[i]):
 					return True
 			return False		
 
@@ -80,33 +80,35 @@ class Spielfeld:
 				return False
 		return True
 
-	def rowmove(self, arr):
+	def rowmove(self, arr, merged):
 		for i in xrange(arr.size-1):
 			if arr[i] == 0 and arr[i+1] != 0:
 				arr[i] = arr[i+1]
 				arr[i+1] = 0
-			elif arr[i] == arr[i+1]:
+			elif arr[i] == arr[i+1] and i not in merged:
 				arr[i] += arr[i+1]
 				arr[i+1] = 0
+				merged.append(i)
 
-	def single_step(self, direction):
+	def single_step(self, direction, merged):
 		if direction == "up":
 			for i in xrange(self.field.shape[1]):
-				self.rowmove(self.field[:,i])
+				self.rowmove(self.field[:,i], merged[i])
 		elif direction == "down":
 			for i in xrange(self.field.shape[1]):
-				self.rowmove(self.field[::-1,i])
+				self.rowmove(self.field[::-1,i], merged[i])
 		elif direction == "left":
 			for i in xrange(self.field.shape[0]):
-				self.rowmove(self.field[i,:])
+				self.rowmove(self.field[i,:], merged[i])
 		else:
 			for i in xrange(self.field.shape[0]):
-				self.rowmove(self.field[i,::-1])
+				self.rowmove(self.field[i,::-1], merged[i])
 
 	def full_move(self, direction):
-		if self.lines_movable(direction):
-			while self.lines_movable(direction):
-				self.single_step(direction)
+		merged = [[] for i in xrange(4)]
+		if self.lines_movable(direction, merged):
+			while self.lines_movable(direction, merged):
+				self.single_step(direction, merged)
 			self.add_numbers()
 
 

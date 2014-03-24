@@ -1,5 +1,8 @@
 import curses
 import game
+import math
+
+curses_colors = [curses.COLOR_WHITE, curses.COLOR_CYAN, curses.COLOR_BLUE, curses.COLOR_GREEN, curses.COLOR_YELLOW, curses.COLOR_MAGENTA, curses.COLOR_RED, curses.COLOR_RED, curses.COLOR_RED, curses.COLOR_RED, curses.COLOR_RED]
 
 class MainWindow:
 
@@ -14,6 +17,9 @@ class MainWindow:
 		self.myscreen = curses.initscr()
 		curses.curs_set(0)
 		curses.start_color()
+
+		for i in xrange(1, 11):
+			curses.init_pair(i, curses_colors[i], curses.COLOR_BLACK) 
 
 	def __exit__(self, type, value, traceback):
 		curses.endwin()			
@@ -64,7 +70,6 @@ class MainWindow:
 
 	def draw(self, text):
 		self.myscreen.border(0)
-		self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
 		self.myscreen.addstr(4, self.dims[1]/2, text, curses.A_BOLD)
 		self.draw_field()			
 		curses.napms(50)
@@ -72,7 +77,7 @@ class MainWindow:
 
 	def draw_surroundings(self):
 		self.myscreen.border(0)
-		self.myscreen.addstr(1, 1, "2048", curses.A_BOLD)
+		self.myscreen.addstr(1, 1, "2048", curses.color_pair(1))# curses.A_BOLD)
 		self.draw_field()			
 
 	def draw_field(self):
@@ -90,4 +95,4 @@ class MainWindow:
 
 	def draw_number(self, number, index):
 		pos = (self.dims[0]/2 + 2 + (index/4 - 2) * self.width, self.dims[1]/2-6 +(index %4) *2*self.width)
-		self.myscreen.addstr(pos[0], pos[1], str(number), curses.A_BOLD)
+		self.myscreen.addstr(pos[0], pos[1], str(number), curses.color_pair(int(math.log(number, 2))))

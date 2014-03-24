@@ -95,4 +95,4 @@ class MainWindow:
 
 	def draw_number(self, number, index):
 		pos = (self.dims[0]/2 + 2 + (index/4 - 2) * self.width, self.dims[1]/2-6 +(index %4) *2*self.width)
-		self.myscreen.addstr(pos[0], pos[1], str(number), curses.color_pair(int(math.log(number, 2))))
+		self.myscreen.addstr(pos[0], pos[1], str(number), curses.color_pair(int(math.log(number, 2)))| curses.A_BOLD)
